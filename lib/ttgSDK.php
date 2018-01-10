@@ -37,9 +37,6 @@ class ttgSDK
 		// transform endpoint to match dashed route
 		$endpoint = strtolower(preg_replace('%([a-z])([A-Z])%', '\1-\2', $endpoint));
 
-		echo print_r($args[0], true)."\n";
-        echo "Calling object method '$endpoint' \n";
-
         return $this->api_request($endpoint, $this->method, $payload);
 	}
 
