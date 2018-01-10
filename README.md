@@ -13,20 +13,20 @@ Usage in your project
 use torchlighttechnology\TtgSDK;
 
 $api = new TtgSDK(
-	'URL', // required
-	'USERNAME', // optional
-	'PASSWORD' // optional
+  'URL', // required
+  'USERNAME', // optional
+  'PASSWORD' // optional
 );
 
 $args = [
-	'foo' => 'bar'
+  'foo' => 'bar'
 ];
 
 // your API method must be a dashed route
 // calling it here needs to be camelcased
 $response = $api->yourExposedApiMethod( // translates to your-exposed-api-method
-	json_encode($args), // JSON encoded array
-	'POST' // request type of GET, POST, PUT, DELETE
+  json_encode($args), // JSON encoded array
+  'POST' // request type of GET, POST, PUT, DELETE
 );
 ```
 
@@ -36,15 +36,15 @@ $response = $api->yourExposedApiMethod( // translates to your-exposed-api-method
 
 ```php
 $api = new TtgSDK(
-	'http://delayedevents/'
+  'http://delayedevents/'
 );
 $args = [
-	$callback_uri,
-	$parameters,
-	$fire_date
+  $callback_uri,
+  $parameters,
+  $fire_date
 ];
 $response = $api->create(
-	$args,
-	'POST'
+  $args,
+  'POST'
 );
 ```
