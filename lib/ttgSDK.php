@@ -9,7 +9,7 @@ require 'Error.php';
  * @author waffles
  */
 
-class ttgSDK
+class TtgSDK
 {
 	protected $username;
 	protected $password;
@@ -32,7 +32,7 @@ class ttgSDK
 		if (!$this->is_json($payload)) {
 			throw new API_Error('Payload must be JSON');
 		}
-		// make sure the endpoint has a / on the end
+		// make sure the api_host has a / on the end
 		$this->api_host = rtrim($this->api_host, '/') . '/';
 		// transform endpoint to match dashed route
 		$endpoint = strtolower(preg_replace('%([a-z])([A-Z])%', '\1-\2', $endpoint));
@@ -40,9 +40,9 @@ class ttgSDK
 		return $this->api_request($endpoint, $this->method, $payload);
 	}
 
-	private function is_json($args)
+	private function is_json($payload)
 	{
-		json_decode($args);
+		json_decode($payload);
 		if (json_last_error() == JSON_ERROR_NONE) {
 			return true;
 		}
