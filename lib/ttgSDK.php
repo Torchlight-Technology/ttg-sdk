@@ -9,40 +9,44 @@ require 'Error.php';
  * @author waffles
  */
 
-class ttgSDK
+class TtgSDK
 {
 	protected $username;
 	protected $password;
 	protected $api_host;
-	protected $method;
 
-	public function __construct($api_host, $method = 'POST', $username = null, $password = null)
+	public function __construct($api_host, $username = null, $password = null)
 	{
 		$this->api_host = $api_host;
 		$this->username = $username;
 		$this->password = $password;
-		$this->method = strtoupper($method);
 	}
 
 	public function __call($endpoint, $args)
 	{
-		// dump the args into payload
+		// dump the payload
 		$payload = $args[0];
+		// dump the request type
+		$request = strtoupper($args[1]);
 		// check to see if payload is json
 		if (!$this->is_json($payload)) {
 			throw new API_Error('Payload must be JSON');
 		}
-		// make sure the endpoint has a / on the end
+		// check to make sure the request type is valid
+		if (!preg_match('/(GET|POST|PUT|DELETE)/i', $request)) {
+			throw new API_Error('You need to provide a valid request GET, POST, PUT, DELETE');
+		}
+		// make sure the api_host has a / on the end
 		$this->api_host = rtrim($this->api_host, '/') . '/';
 		// transform endpoint to match dashed route
 		$endpoint = strtolower(preg_replace('%([a-z])([A-Z])%', '\1-\2', $endpoint));
 
-		return $this->api_request($endpoint, $this->method, $payload);
+		return $this->api_request($endpoint, $request, $payload);
 	}
 
-	private function is_json($args)
+	private function is_json($payload)
 	{
-		json_decode($args);
+		json_decode($payload);
 		if (json_last_error() == JSON_ERROR_NONE) {
 			return true;
 		}
