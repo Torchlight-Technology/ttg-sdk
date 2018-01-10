@@ -11,26 +11,45 @@ require 'Error.php';
 
 class ttgSDK
 {
-	const HTTP_POST = 'POST';
-	const HTTP_GET = 'GET';
-	const HTTP_PUT = 'PUT';
-	const HTTP_DELETE = 'DELETE';
-
 	protected $username;
 	protected $password;
 	protected $api_host;
+	protected $method;
 
-	public function __construct($api_host, $username = null, $password = null)
+	public function __construct($api_host, $method = 'POST', $username = null, $password = null)
 	{
 		$this->api_host = $api_host;
 		$this->username = $username;
 		$this->password = $password;
+		$this->method = strtoupper($method);
 	}
 
-	public function __call($name, $args)
+	public function __call($endpoint, $args)
 	{
-        echo "Calling object method '$name' "
-             . implode(', ', $arguments). "\n";
+		// dump the args into payload
+		$payload = $args[0];
+		// check to see if payload is json
+		if (!$this->is_json($payload)) {
+			throw new API_Error('Payload must be JSON');
+		}
+		// make sure the endpoint has a / on the end
+		$this->api_host = rtrim($this->api_host, '/') . '/';
+		// transform endpoint to match dashed route
+		$endpoint = strtolower(preg_replace('%([a-z])([A-Z])%', '\1-\2', $endpoint));
+
+		echo print_r($args[0], true)."\n";
+        echo "Calling object method '$endpoint' \n";
+
+        return $this->api_request($endpoint, $this->method, $payload);
+	}
+
+	private function is_json($args)
+	{
+		json_decode($args);
+		if (json_last_error() == JSON_ERROR_NONE) {
+			return true;
+		}
+		return false;
 	}
 
 	protected function build_path($endpoint)
@@ -52,22 +71,20 @@ class ttgSDK
 		$ch = curl_init($path);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $request);
 
-		$payload_string = null;
 		if ($payload) {
-			$payload_string = json_encode($payload);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $payload_string);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 		}
 
 		if ($payload && ($request == 'POST' || $request == 'PUT')) {
-			$http_headers = array(
+			$http_headers = [
 				'Content-Type: application/json',
-				'Content-Length: '.strlen($payload_string),
+				'Content-Length: '.strlen($payload),
 				'authorization: Basic '. base64_encode($this->username.':'.$this->password)
-			);
+			];
 		} else {
-			$http_headers = array(
+			$http_headers = [
 				'authorization: Basic '. base64_encode($this->username.':'.$this->password)
-			);
+			];
 		}
 
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
