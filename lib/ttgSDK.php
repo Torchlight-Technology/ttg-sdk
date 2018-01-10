@@ -37,7 +37,7 @@ class ttgSDK
 		// transform endpoint to match dashed route
 		$endpoint = strtolower(preg_replace('%([a-z])([A-Z])%', '\1-\2', $endpoint));
 
-        return $this->api_request($endpoint, $this->method, $payload);
+		return $this->api_request($endpoint, $this->method, $payload);
 	}
 
 	private function is_json($args)
