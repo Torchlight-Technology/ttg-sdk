@@ -35,8 +35,10 @@ $response = $api->yourExposedApiMethod( // translates to your-exposed-api-method
 ## Create a new event on delayed events
 
 ```php
+use torchlighttechnology\TtgSDK;
+
 $api = new TtgSDK(
-  'http://delayedevents/'
+  'http://delayedevents/delayed-events/'
 );
 $args = [
   $callback_uri,
@@ -44,7 +46,7 @@ $args = [
   $fire_date
 ];
 $response = $api->create(
-  $args,
+  json_encode($args),
   'POST'
 );
 ```
