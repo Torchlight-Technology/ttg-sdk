@@ -39,7 +39,7 @@ class TtgSDK
 		// make sure the api_host has a / on the end
 		$this->api_host = rtrim($this->api_host, '/') . '/';
 		// transform endpoint to match dashed route
-		$endpoint = strtolower(preg_replace('%([a-z])([A-Z])%', '\1-\2', $endpoint));
+		$endpoint = strtolower(preg_replace('/(?<=\d)(?=[A-Za-z])|(?<=[A-Za-z])(?=\d)|(?<=[a-z])(?=[A-Z])/', '\1-\2', $endpoint));
 
 		return $this->api_request($endpoint, $request, $payload);
 	}
