@@ -112,7 +112,6 @@ class TtgSDK
 			$response = json_decode($result);
 
 			if ($code != 200) {
-				print_r($result);
 				throw new API_Error('Request was not successful', $code, $result, $response);
 			}
 		} catch (API_Error $e) {
