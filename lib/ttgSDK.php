@@ -14,12 +14,17 @@ class TtgSDK
 	protected $username;
 	protected $password;
 	protected $api_host;
+	protected $headers;
 
 	public function __construct($api_host, $username = null, $password = null)
 	{
 		$this->api_host = $api_host;
 		$this->username = $username;
 		$this->password = $password;
+	}
+
+	public function setHeaders($headers) {
+		$this->headers = $headers;
 	}
 
 	public function __call($endpoint, $args)
@@ -70,13 +75,16 @@ class TtgSDK
 		$path = $this->build_path($endpoint);
 
 		$ch = curl_init($path);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $request);
 
 		if ($payload) {
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 		}
 
 		if ($payload && ($request == 'POST' || $request == 'PUT')) {
+			// Using CURLOPT_POST is favored over CURLOPT_CUSTOMREQUEST
+			// And reminder CURL uses GET by default
+			curl_setopt($ch, CURLOPT_POST, true);
+
 			$http_headers = [
 				'Content-Type: application/json',
 				'Content-Length: '.strlen($payload),
@@ -88,9 +96,13 @@ class TtgSDK
 			];
 		}
 
+		if(!empty($this->headers)) {
+			$http_headers = array_merge($http_headers, $this->headers);
+		}
+
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $http_headers);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 20);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 
 		$code = null;

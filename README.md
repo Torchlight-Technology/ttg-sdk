@@ -40,6 +40,10 @@ use torchlighttechnology\TtgSDK;
 $api = new TtgSDK(
   'http://delayedevents/delayed-events/'
 );
+
+// Add custom headers
+$api->setHeaders( ['x-api-key: abc1234'] );
+
 $args = [
   $callback_uri,
   $parameters,
