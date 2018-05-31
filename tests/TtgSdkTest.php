@@ -7,6 +7,23 @@ use torchlighttechnology\TtgSDK;
 class TtgSdkTest extends TestCase
 {
 
+    public function testBasic()
+    {
+        $url = 'http://delayed-event.local/delayed-events/';
+        $ttgSdk = new TtgSDK($url);
+
+        $response = $ttgSdk->fireEvents(
+            '{}',
+            'POST'
+        );
+
+        $this->assertNotEmpty($response);
+
+        if(!empty($response->status)) {
+            $this->assertNotEquals($response->status, 'error');
+        }
+    }
+
     public function testBasicWithHeaders()
     {
         $url = 'https://api.torchte.ch/delayedevents/staging/delayed-events/';
