@@ -4,7 +4,7 @@ A PHP library to interact with TTG's APIs
 Install with composer
 
 ```
-composer require torchlighttechnology/torchlight-sdk:"~1.0"
+composer require torchlighttechnology/ttg-sdk:"~1.0"
 ```
 
 Usage in your project
