@@ -1,5 +1,5 @@
 {
-    "name": "torchlighttechnology/ttg-sdk",
+    "name": "torchlighttechnology/torchlight-sdk",
     "description": "TTG SDK",
     "autoload": {
         "classmap": ["lib"]
